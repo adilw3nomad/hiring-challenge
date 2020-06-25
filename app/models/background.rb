@@ -1,6 +1,4 @@
 class Background < ActiveRecord::Base
-  belongs_to :marked_category
-
   # TODO: [2020-04-04 MJR] how did this hit production without validations?????
 
   # TODO: [2016-02-15 JMC] add timestamps, frontend complain they cant order by newest
