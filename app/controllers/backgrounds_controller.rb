@@ -50,11 +50,6 @@ class BackgroundsController < ApplicationController
           background.name = "twitter"
         end
 
-        # TODO: [2016-12-25 SC] Why isn't this done at the DB level?
-        if background.url == nil
-          background.url = ""
-        end
-
         result = background.save
 
         if result == true
