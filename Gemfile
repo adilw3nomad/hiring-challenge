@@ -27,6 +27,9 @@ end
 
 gem 'jbuilder', '~> 2.5'
 group :development, :test do
+  gem 'faker', :git => 'https://github.com/faker-ruby/faker.git', :branch => 'master'
+  gem 'factory_bot_rails'
+  gem 'rubocop-rails'
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'capybara', '>= 2.15'
   gem 'selenium-webdriver'

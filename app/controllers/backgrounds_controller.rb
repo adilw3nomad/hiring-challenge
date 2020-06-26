@@ -2,8 +2,9 @@
 # TODO: [2020-06-01, JMC] we need the xml endpoints for these for the stockport contract by March
 class BackgroundsController < ApplicationController
   def index
+    @backgrounds = Background.all
     render json: {
-      backgrounds: Background.all
+      backgrounds: @backgrounds.sort_by(&:created_at).reverse
     }
   end
 
