@@ -37,7 +37,7 @@ class BackgroundsController < ApplicationController
       return background.to_json()
     else
       render json: {
-        errrors: background.errors.full_messages
+        errors: background.errors.full_messages
       }
     end
   end

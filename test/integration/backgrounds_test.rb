@@ -10,7 +10,7 @@ class BackgroundsTest < ActionDispatch::IntegrationTest
     test 'it should return all backgrounds' do
       get backgrounds_path format: :json
       json = JSON.parse(response.body)
-      
+
       assert_response :success
       assert_equal 10, json['backgrounds'].size
     end
@@ -18,7 +18,7 @@ class BackgroundsTest < ActionDispatch::IntegrationTest
     test 'it should return the newest backgrounds first' do
       get backgrounds_path format: :json
       json = JSON.parse(response.body)
-      
+
       assert_equal @background.id, json['backgrounds'].first['id']
     end
 
@@ -27,7 +27,7 @@ class BackgroundsTest < ActionDispatch::IntegrationTest
 
       assert_response :success
       assert_equal 'application/xml', response.media_type
-      assert_select 'background', {count: 10} do |element|
+      assert_select 'background', { count: 10 } do
         assert_select 'id'
         assert_select 'url'
         assert_select 'comment'
@@ -38,8 +38,8 @@ class BackgroundsTest < ActionDispatch::IntegrationTest
   end
 
   class ShowActionTest < BackgroundsTest
-    test 'it should return a single background as json' do 
-      get background_path @background.id, format: :json 
+    test 'it should return a single background as json' do
+      get background_path @background.id, format: :json
       json = JSON.parse(response.body)
 
       assert_response :success
@@ -47,18 +47,42 @@ class BackgroundsTest < ActionDispatch::IntegrationTest
       assert_equal @background.as_json, json
     end
 
-    test 'it should return a single background as xml' do 
-      get background_path @background.id, format: :xml 
+    test 'it should return a single background as xml' do
+      get background_path @background.id, format: :xml
 
       assert_response :success
       assert_equal 'application/xml', response.media_type
-      assert_select 'background', {count: 1} do |element|
+      assert_select 'background', { count: 1 } do
         assert_select 'id'
         assert_select 'url'
         assert_select 'comment'
         assert_select 'created_at'
         assert_select 'updated_at'
       end
+    end
+  end
+
+  class CreateActionTest < BackgroundsTest
+    test 'it creates a background record if params are valid' do
+      assert_changes 'Background.count', from: 10, to: 11 do
+        post '/backgrounds', params: {
+          background: {
+            name: 'Mountain Range', url: 'https://imgur.com/n1ge', comment: 'A mountain range'
+          }
+        }
+      end
+    end
+
+    test 'it does not create a background record if params are missing' do
+      assert_no_changes 'Background.count' do
+        post '/backgrounds', params: {
+          background: {
+            name: 'Mountain Range', url: 'https://imgur.com/n1ge'
+          }
+        }
+      end
+      resp = JSON.parse(response.body)
+      assert_equal resp['errors'], ['Comment can\'t be blank']
     end
   end
 end
