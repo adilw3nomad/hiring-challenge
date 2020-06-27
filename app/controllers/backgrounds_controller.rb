@@ -1,6 +1,7 @@
 # Processes the image backgrounds for use on screens
 # TODO: [2020-06-01, JMC] we need the xml endpoints for these for the stockport contract by March
 class BackgroundsController < ApplicationController
+  before_action :find_background, only: :show
   def index
     @backgrounds = Background.order("created_at DESC")
     respond_to do |format|
@@ -10,9 +11,7 @@ class BackgroundsController < ApplicationController
   end
 
   def show
-    background = find_background(params[:id])
-
-    render json: background.to_json
+    render json: @background
   end
 
   def create
@@ -62,9 +61,10 @@ class BackgroundsController < ApplicationController
           }
         end
   end
-      
-  def find_background(background_id)
-    # [TEST-GUIDANCE]: We're not expecting scoping by user/account here, assume backgrounds are public resource
-    return Background.where(id: background_id).first()
+  
+  protected
+
+  def find_background
+    @background ||= Background.find(params[:id])
   end
 end
