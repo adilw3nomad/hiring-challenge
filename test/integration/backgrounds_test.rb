@@ -2,7 +2,7 @@ require 'test_helper'
 
 class BackgroundsTest < ActionDispatch::IntegrationTest
   setup do
-    9.times{ create(:background, created_at: 2.days.ago)}
+    9.times { create(:background, created_at: 2.days.ago) }
     @background = create(:background, created_at: 5.minutes.ago)
   end
 
@@ -70,6 +70,7 @@ class BackgroundsTest < ActionDispatch::IntegrationTest
             name: 'Mountain Range', url: 'https://imgur.com/n1ge', comment: 'A mountain range'
           }
         }
+        assert_response :created
       end
     end
 
@@ -83,6 +84,7 @@ class BackgroundsTest < ActionDispatch::IntegrationTest
       end
       resp = JSON.parse(response.body)
       assert_equal resp['errors'], ['Comment can\'t be blank']
+      assert_response :unprocessable_entity
     end
 
     test 'it changes the name of the background before saving if it is flagged' do
@@ -92,7 +94,7 @@ class BackgroundsTest < ActionDispatch::IntegrationTest
         }
       }
       refute Background.last.name == 'facebook'
-      assert_equal Background.last.url,'https://imgur.com/facebook'
+      assert_equal Background.last.url, 'https://imgur.com/facebook'
     end
   end
 
@@ -108,7 +110,7 @@ class BackgroundsTest < ActionDispatch::IntegrationTest
     end
 
     test 'it does not update background if params are invalid' do
-      assert_no_changes '@background.comment' do 
+      assert_no_changes '@background.comment' do
         patch "/backgrounds/#{@background.id}", params: {
           background: {
             comment: nil
@@ -116,6 +118,7 @@ class BackgroundsTest < ActionDispatch::IntegrationTest
         }
         resp = JSON.parse(response.body)
         assert_equal resp['errors'], ['Comment can\'t be blank']
+        assert_response :unprocessable_entity
       end
     end
   end

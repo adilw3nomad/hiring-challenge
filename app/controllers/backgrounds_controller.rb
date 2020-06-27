@@ -1,7 +1,7 @@
 # Processes the image backgrounds for use on screens
 class BackgroundsController < ApplicationController
   before_action :find_background, only: [:show, :update]
-  
+
   def index
     @backgrounds = Background.order('created_at DESC')
     respond_to do |format|
@@ -20,11 +20,11 @@ class BackgroundsController < ApplicationController
   def create
     background = Background.new(background_params)
     if background.save
-      render json: background
+      render json: background, status: :created
     else
       render json: {
         errors: background.errors.full_messages
-      }
+      }, status: :unprocessable_entity
     end
   end
 
@@ -34,7 +34,7 @@ class BackgroundsController < ApplicationController
     else
       render json: {
         errors: @background.errors.full_messages
-      }
+      }, status: :unprocessable_entity
     end
   end
 
