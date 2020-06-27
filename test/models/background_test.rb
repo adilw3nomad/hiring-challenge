@@ -9,7 +9,7 @@ class BackgroundTest < ActiveSupport::TestCase
   end
 
   test '#need_to_change_name? returns true if the name is one that is flagged' do
-    background = create(:background, name: 'facebook')
+    background = build(:background, name: 'facebook')
     assert background.need_to_change_name?
   end
 

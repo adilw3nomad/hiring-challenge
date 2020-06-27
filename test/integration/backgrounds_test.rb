@@ -84,5 +84,15 @@ class BackgroundsTest < ActionDispatch::IntegrationTest
       resp = JSON.parse(response.body)
       assert_equal resp['errors'], ['Comment can\'t be blank']
     end
+
+    test 'it changes the name of the background before saving if it is flagged' do
+      post '/backgrounds', params: {
+        background: {
+          name: 'facebook', url: 'https://imgur.com/facebook', comment: 'A mountain range'
+        }
+      }
+      refute Background.last.name == 'facebook'
+      assert_equal Background.last.url,'https://imgur.com/facebook'
+    end
   end
 end

@@ -1,18 +1,14 @@
 class Background < ActiveRecord::Base
-  # TODO: [2020-04-04 MJR] how did this hit production without validations?????
+  # Flagged names are names which we need to change for copyright reasons
+  FLAGGED_NAMES = %w[facebook twitter tiktok].freeze
+  validates :comment, presence: true
+  before_create :change_name if :need_to_change_name?
 
-  # TODO: [2016-02-15 JMC] add timestamps, frontend complain they cant order by newest
+  def need_to_change_name?
+    FLAGGED_NAMES.include?(name)
+  end
 
-  def need_to_change_name?(_name)
-    # we need to rename the image name if facebook, vine, or tiktok for copyright reasons
-    if background.name == 'facebook'
-      return true
-    elsif background.name == 'twitter'
-      return true
-    elsif background.name == 'tiktok'
-      return true
-    end
-
-    false
+  def change_name
+    self.name = Faker::Games::Dota.hero
   end
 end
