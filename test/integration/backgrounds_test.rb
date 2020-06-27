@@ -24,12 +24,16 @@ class BackgroundsTest < ActionDispatch::IntegrationTest
 
     test 'it should respond to xml requests' do
       get backgrounds_path format: :xml
-      hashed_xml = Hash.from_xml(response.body)
-      actual = hashed_xml['backgrounds']['background'].first
 
       assert_response :success
       assert_equal 'application/xml', response.media_type
-      assert_equal @background.id.to_s, actual['id']
+      assert_select 'background', {count: 10} do |element|
+        assert_select 'id'
+        assert_select 'url'
+        assert_select 'comment'
+        assert_select 'created_at'
+        assert_select 'updated_at'
+      end
     end
   end
 
@@ -39,8 +43,22 @@ class BackgroundsTest < ActionDispatch::IntegrationTest
       json = JSON.parse(response.body)
 
       assert_response :success
-      assert_equal 'application/json', response.media_type
+      assert_equal 'application/json', response.media_type # this can be refactored into an assertion method
       assert_equal @background.as_json, json
+    end
+
+    test 'it should return a single background as xml' do 
+      get background_path @background.id, format: :xml 
+
+      assert_response :success
+      assert_equal 'application/xml', response.media_type
+      assert_select 'background', {count: 1} do |element|
+        assert_select 'id'
+        assert_select 'url'
+        assert_select 'comment'
+        assert_select 'created_at'
+        assert_select 'updated_at'
+      end
     end
   end
 end
