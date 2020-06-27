@@ -1,12 +1,12 @@
 # Processes the image backgrounds for use on screens
-# TODO: [2020-06-01, JMC] we need the xml endpoints for these for the stockport contract by March
 class BackgroundsController < ApplicationController
-  before_action :find_background, only: :show
+  before_action :find_background, only: [:show, :update]
+  
   def index
-    @backgrounds = Background.order("created_at DESC")
+    @backgrounds = Background.order('created_at DESC')
     respond_to do |format|
       format.json { render json: { backgrounds: @backgrounds } }
-      format.xml 
+      format.xml
     end
   end
 
@@ -18,23 +18,9 @@ class BackgroundsController < ApplicationController
   end
 
   def create
-    # background_params = 
-
-    background = Background.create(params.require(:background).permit!)
-
-    # we need to rename the image name if facebook, vine, or tiktok for copyright reasons
-    if background.name == "facebook"
-      background.name = "datazucc"
-    elsif background.name == "twitter"
-      background.name = "screecher"
-    elsif background.name == "tiktok"
-      background.name = "dingdong"
-    end
-
-    result = background.save
-
-    if result == true
-      return background.to_json()
+    background = Background.new(background_params)
+    if background.save
+      render json: background
     else
       render json: {
         errors: background.errors.full_messages
@@ -43,29 +29,20 @@ class BackgroundsController < ApplicationController
   end
 
   def update
-    @background = find_background(params[:id])
-
-        background = @background.update(params.require(:background).permit!)
-
-        # we need to rename the image name if facebook or vine
-        if background.name == "facebook"
-          background.name = "instagram"
-        elsif background.name == "vine"
-          background.name = "twitter"
-        end
-
-        result = background.save
-
-        if result == true
-          return background.to_json()
-        else
-          render json: {
-            errrors: background.errors.full_messages
-          }
-        end
+    if @background.update(background_params)
+      render json: @background
+    else
+      render json: {
+        errors: @background.errors.full_messages
+      }
+    end
   end
-  
+
   protected
+
+  def background_params
+    params.require(:background).permit(:comment, :url, :name)
+  end
 
   def find_background
     @background ||= Background.find(params[:id])

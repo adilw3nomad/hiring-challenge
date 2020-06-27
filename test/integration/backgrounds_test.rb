@@ -63,7 +63,7 @@ class BackgroundsTest < ActionDispatch::IntegrationTest
   end
 
   class CreateActionTest < BackgroundsTest
-    test 'it creates a background record if params are valid' do
+    test 'it creates a background if params are valid' do
       assert_changes 'Background.count', from: 10, to: 11 do
         post '/backgrounds', params: {
           background: {
@@ -73,7 +73,7 @@ class BackgroundsTest < ActionDispatch::IntegrationTest
       end
     end
 
-    test 'it does not create a background record if params are missing' do
+    test 'it does not create a background if params are missing' do
       assert_no_changes 'Background.count' do
         post '/backgrounds', params: {
           background: {
@@ -93,6 +93,30 @@ class BackgroundsTest < ActionDispatch::IntegrationTest
       }
       refute Background.last.name == 'facebook'
       assert_equal Background.last.url,'https://imgur.com/facebook'
+    end
+  end
+
+  class UpdateActionTest < BackgroundsTest
+    test 'it updates a background' do 
+      patch "/backgrounds/#{@background.id}", params: {
+        background: {
+          comment: 'Lets get schwifty!'
+        }
+      }
+      assert_response :success
+      assert_equal @background.reload.comment, 'Lets get schwifty!'
+    end
+
+    test 'it does not update background if params are invalid' do
+      assert_no_changes '@background.comment' do 
+        patch "/backgrounds/#{@background.id}", params: {
+          background: {
+            comment: nil
+          }
+        }
+        resp = JSON.parse(response.body)
+        assert_equal resp['errors'], ['Comment can\'t be blank']
+      end
     end
   end
 end
