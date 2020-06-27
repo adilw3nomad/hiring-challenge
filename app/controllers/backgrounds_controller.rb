@@ -11,7 +11,10 @@ class BackgroundsController < ApplicationController
   end
 
   def show
-    render json: @background
+    respond_to do |format|
+      format.json { render json: @background }
+      format.xml
+    end
   end
 
   def create
