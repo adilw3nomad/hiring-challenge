@@ -3,8 +3,13 @@
 require 'test_helper'
 
 class BackgroundTest < ActiveSupport::TestCase
-  test 'it validates the presence of a comment on creation' do
+  test 'it validates the presence of a comment' do
     background = build(:background, comment: nil)
+    refute background.valid?
+  end
+
+  test 'it validates the presence of an image' do
+    background = build(:background, image: nil)
     refute background.valid?
   end
 
@@ -24,4 +29,5 @@ class BackgroundTest < ActiveSupport::TestCase
     background.save
     refute background.name == 'facebook'
   end
+
 end
