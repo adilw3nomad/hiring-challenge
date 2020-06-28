@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Background < ActiveRecord::Base
   # Flagged names are names which we need to change for copyright reasons
   FLAGGED_NAMES = %w[facebook twitter tiktok].freeze

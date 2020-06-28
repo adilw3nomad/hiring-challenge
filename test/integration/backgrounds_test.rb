@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class BackgroundsTest < ActionDispatch::IntegrationTest
@@ -67,7 +69,7 @@ class BackgroundsTest < ActionDispatch::IntegrationTest
       assert_changes 'Background.count', from: 10, to: 11 do
         post '/backgrounds', params: {
           background: {
-            name: 'Mountain Range', url: 'https://imgur.com/n1ge', comment: 'A mountain range'
+            name: 'Mountain Range', url: 'https://imgur.com/n1ge', comment: 'A mountain range', image: FilesHelper.jpg
           }
         }
         assert_response :created
@@ -78,7 +80,7 @@ class BackgroundsTest < ActionDispatch::IntegrationTest
       assert_no_changes 'Background.count' do
         post '/backgrounds', params: {
           background: {
-            name: 'Mountain Range', url: 'https://imgur.com/n1ge'
+            name: 'Mountain Range', url: 'https://imgur.com/n1ge', image: FilesHelper.jpg
           }
         }
       end
@@ -90,7 +92,8 @@ class BackgroundsTest < ActionDispatch::IntegrationTest
     test 'it changes the name of the background before saving if it is flagged' do
       post '/backgrounds', params: {
         background: {
-          name: 'facebook', url: 'https://imgur.com/facebook', comment: 'A mountain range'
+          name: 'facebook', url: 'https://imgur.com/facebook', comment: 'A mountain range',
+          image: FilesHelper.jpg
         }
       }
       refute Background.last.name == 'facebook'
@@ -99,7 +102,7 @@ class BackgroundsTest < ActionDispatch::IntegrationTest
   end
 
   class UpdateActionTest < BackgroundsTest
-    test 'it updates a background' do 
+    test 'it updates a background' do
       patch "/backgrounds/#{@background.id}", params: {
         background: {
           comment: 'Lets get schwifty!'

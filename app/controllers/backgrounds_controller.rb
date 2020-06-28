@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 # Processes the image backgrounds for use on screens
 class BackgroundsController < ApplicationController
-  before_action :find_background, only: [:show, :update]
+  before_action :find_background, only: %i[show update]
 
   def index
     @backgrounds = Background.order('created_at DESC')
@@ -41,7 +43,7 @@ class BackgroundsController < ApplicationController
   protected
 
   def background_params
-    params.require(:background).permit(:comment, :url, :name)
+    params.require(:background).permit(:comment, :url, :name, :image)
   end
 
   def find_background

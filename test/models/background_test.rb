@@ -29,5 +29,4 @@ class BackgroundTest < ActiveSupport::TestCase
     background.save
     refute background.name == 'facebook'
   end
-
 end
