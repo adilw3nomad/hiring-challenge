@@ -6,5 +6,8 @@ FactoryBot.define do
     url  { Faker::Internet.url }
     comment { Faker::TvShows::RickAndMorty.quote }
     image { FilesHelper.jpg }
+    trait :without_image do
+      image { nil }
+    end
   end
 end

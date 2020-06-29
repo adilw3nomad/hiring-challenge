@@ -12,10 +12,13 @@ module FilesHelper
     upload(jpg_name, 'image/jpg')
   end
 
+  def file_path(name)
+    Rails.root.join('test', 'fixtures', 'files', name)
+  end
+
   private
 
   def upload(name, type)
-    file_path = Rails.root.join('test', 'fixtures', 'files', name)
-    fixture_file_upload(file_path, type)
+    fixture_file_upload(file_path(name), type)
   end
 end

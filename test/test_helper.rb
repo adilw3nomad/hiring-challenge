@@ -4,6 +4,8 @@ require 'simplecov'
 SimpleCov.start
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../config/environment', __dir__)
+require 'minitest/unit'
+require 'mocha/minitest'
 require 'rails/test_help'
 require 'faker'
 require 'helpers/files_helper'

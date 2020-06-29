@@ -8,6 +8,7 @@ class Background < ActiveRecord::Base
 
   validates :comment, presence: true
   validates :image, presence: true
+  validate :image_size
 
   before_create :change_name if :need_to_change_name?
 
@@ -17,5 +18,11 @@ class Background < ActiveRecord::Base
 
   def change_name
     self.name = Faker::Games::Dota.hero
+  end
+
+  def image_size
+    if image.attached? && image.blob.byte_size > 100.megabytes
+      errors.add(:image, "can't be greater than 100 megabytes")
+    end
   end
 end
