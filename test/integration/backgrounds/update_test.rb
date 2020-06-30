@@ -3,7 +3,7 @@
 require 'test_helper'
 
 module Backgrounds
-  class UpdateActionTest < ActionDispatch::IntegrationTest
+  class UpdateActionTest < ShowActionTest
     test 'it updates a background' do
       patch "/backgrounds/#{@background.id}", params: {
         background: {
